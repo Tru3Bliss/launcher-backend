@@ -5,12 +5,15 @@ export const AppContext = createContext();
 
 const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
+  const [auth, setAuth] = useState(false);
 
   return (
-    <AppContext.Provider 
-      value={{ 
-        loading, 
-        setLoading
+    <AppContext.Provider
+      value={{
+        loading,
+        setLoading,
+        auth,
+        setAuth
       }}
     >
       {children}

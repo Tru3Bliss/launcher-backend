@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from "react-helmet";
+import SideBar from '../components/sidebar';
 
 const Layout = ({
   children,
@@ -13,7 +14,8 @@ const Layout = ({
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <main className="w-full flex-1 mt-16">
+      <main className="w-full flex-1 bg-slate-600">
+        <SideBar />
         {children}
       </main>
     </div>
