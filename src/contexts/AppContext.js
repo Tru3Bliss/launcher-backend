@@ -6,6 +6,7 @@ export const AppContext = createContext();
 const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [auth, setAuth] = useState(false);
+  const [db, setDb] = useState(null)
 
   return (
     <AppContext.Provider
@@ -13,7 +14,9 @@ const AppContextProvider = ({ children }) => {
         loading,
         setLoading,
         auth,
-        setAuth
+        setAuth,
+        db, 
+        setDb
       }}
     >
       {children}
