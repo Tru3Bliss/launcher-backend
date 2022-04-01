@@ -5,7 +5,7 @@ import PrimaryButton, { SideButton } from '../button'
 
 const SideBar = () => {
   return (
-    <div className='bg-gray-800 rounded-r-lg h-screen w-300 flex flex-col px-4 pt-6 drop-shadow-[0_5px_6px_rgba(0,0,0,0.5)] mr-6'>
+    <div className='bg-gray-800 rounded-r-lg h-screen w-300 flex flex-col px-4 pt-6 drop-shadow-[0_5px_6px_rgba(0,0,0,0.5)] mr-6 flex-shrink-0'>
       <img src="assets/image/logo_brand.png" alt='brand' className='w-2/3 mx-auto' />
       <div className='w-full flex flex-col mt-10 flex-1 gap-4'>
         <SideButton target="/channel" icon={faFolderTree}>Channel</SideButton>

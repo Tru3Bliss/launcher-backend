@@ -13,6 +13,18 @@ module.exports = {
           blue: {
             DEFAULT: '#133295',
             dark: '#03185B'
+          },
+          green:{
+            DEFAULT: '#13e02f',
+            dark: '#0caa21',
+          },
+          red:{
+            DEFAULT: '#f03232',
+            dark: '#c21818',
+          },
+          gray:{
+            DEFAULT: '#afafaf',
+            dark: '#8a8a8a'
           }
         }
       },
