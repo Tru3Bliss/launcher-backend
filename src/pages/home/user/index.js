@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { collection, query, where, onSnapshot, addDoc, getDocs, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, getDocs, setDoc, deleteDoc, doc } from "firebase/firestore";
 import { Table } from 'rsuite';
 import { Pagination } from 'rsuite';
 import "rsuite/dist/rsuite.min.css";
@@ -10,6 +10,7 @@ import { db } from '../../../firebase/config';
 import "./user.css"
 import PrimaryButton, { ActionButton } from '../../../components/button';
 import CreateUserModal from '../../../components/modal/user';
+import moment from 'moment';
 
 const UsersPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -18,98 +19,26 @@ const UsersPage = () => {
   const [page, setPage] = useState(1);
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [userList, setUserList] = useState([
-    {
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "password": "123456",
-      "active": true,
-      "id": "5G2vE19rH5X1W1ohi8Sw"
-    },
-    {
-      "password": "123456",
-      "active": true,
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "id": "C2mFiC5nRouVcMrSTnYK"
-    },
-    {
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "password": "123456",
-      "active": true,
-      "id": "NT1ApX2iIqF87smwqgzG"
-    },
-    {
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "password": "123456",
-      "active": true,
-      "id": "VktXZLPa3mNALVQrwvW4"
-    },
-    {
-      "active": true,
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "password": "123456",
-      "id": "ao9eXDp5kowZyxbFUbrW"
-    },
-    {
-      "displayName": "Japan",
-      "active": true,
-      "email": "Tokyo",
-      "password": "123456",
-      "id": "ent6lq3qCfCeayPOzIG0"
-    },
-    {
-      "email": "Tokyo",
-      "active": true,
-      "password": "123456",
-      "displayName": "Japan",
-      "id": "mwFPgvpnlE6nyJ36xyUF"
-    },
-    {
-      "active": true,
-      "password": "123456",
-      "displayName": "Japan",
-      "email": "Tokyo",
-      "id": "nzgdZHsHcLqfxdp10MPf"
-    },
-    {
-      "password": "123456",
-      "displayName": "Japan",
-      "active": true,
-      "email": "Tokyo",
-      "id": "sYRRlwLRi9JTUEIv6Oo0"
-    },
-    {
-      "id": "xdkfiMl48YLmn3WtiK6C"
-    },
-    {
-      "email": "Tokyo",
-      "active": true,
-      "password": "123456",
-      "displayName": "Japan",
-      "id": "zUgiXDGsEbHIeClwwcLd"
-    },
-    {
-      "active": true,
-      "password": "123456",
-      "email": "Tokyo",
-      "displayName": "Japan",
-      "id": "zhO442ArMfZrb1xD39XD"
-    }
-  ])
+  const [userList, setUserList] = useState([])
   const context = useAppContext()
 
 
   const handleCreate = async (email, name, password) => {
-    const docRef = await addDoc(collection(db, "user"), {
+    const id = new Date().getTime()
+    console.log(id, email, password, name)
+    // const docRef = await setDoc(doc(db, "user", id), {
+    //   email: email,
+    //   displayName: name,
+    //   password: password,
+    //   active: true,
+    // });
+    await setDoc(doc(db, "user", id), {
       email: email,
       displayName: name,
       password: password,
       active: true,
     });
+    // setUserList([...userList, ])
   }
 
   const getUser = async () => {
@@ -128,8 +57,10 @@ const UsersPage = () => {
 
   }
 
-  const handleRemove = () => {
-
+  const handleRemove = async(id) => {
+    console.log(id)
+    const result = await deleteDoc(doc(db, "user", id))
+    getUser()
   }
 
   const handleChangeLimit = dataKey => {
@@ -145,7 +76,7 @@ const UsersPage = () => {
 
   useEffect(() => {
     console.log(db)
-    // getUser()
+    getUser()
   }, [])
 
   return (
@@ -169,11 +100,11 @@ const UsersPage = () => {
             }}
             limit={limit}
           >
-            <Table.Column width={200} fixed className="">
+            <Table.Column width={200} className="">
               <Table.HeaderCell className="">Email</Table.HeaderCell>
               <Table.Cell dataKey="email" className="flex items-center justify-center" />
             </Table.Column>
-            <Table.Column flexGrow={1} align="center" fixed>
+            <Table.Column flexGrow={1} align="center" >
               <Table.HeaderCell>Display Name</Table.HeaderCell>
               <Table.Cell dataKey="displayName" />
             </Table.Column>

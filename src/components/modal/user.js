@@ -10,14 +10,14 @@ const CreateUserModal = (props) => {
   const [password, setPassword] = useState("")
   const [error, setError] = useState(0)
 
-  const clear = () => {
+  const clear =  () => {
     setEmail("")
     setName("")
     setPassword("")
     setError(0)
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (email.length === 0) {
       setError(1)
     }
@@ -28,7 +28,7 @@ const CreateUserModal = (props) => {
       setError(3)
     }
     else {
-      create(email, name, password)
+      await create(email, name, password)
       clear()
       setOpen(false)
     }
