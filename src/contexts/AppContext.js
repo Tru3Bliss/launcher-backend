@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 export const AppContext = createContext();
@@ -6,7 +6,6 @@ export const AppContext = createContext();
 const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [auth, setAuth] = useState(false);
-  const [db, setDb] = useState(null)
 
   return (
     <AppContext.Provider
@@ -15,8 +14,6 @@ const AppContextProvider = ({ children }) => {
         setLoading,
         auth,
         setAuth,
-        db, 
-        setDb
       }}
     >
       {children}
