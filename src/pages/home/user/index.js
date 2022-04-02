@@ -31,11 +31,9 @@ const UsersPage = () => {
       active: true,
       createdAt: new Date().getTime()
     }
-    setLoading(true)
     const docRef = await addDoc(collection(db, "user"), user).then(() => {
-      setUserList([...userList, user])
     });
-    setLoading(false)
+    getUser()
   }
 
   const getUser = async () => {
