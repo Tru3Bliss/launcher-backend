@@ -54,7 +54,7 @@ const Layout = ({
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <main className="w-full flex-1 bg-gray-600 flex">
+      <main className="w-full flex-1 bg-gray-600 flex relative">
         <SideBar />
         {children}
       </main>

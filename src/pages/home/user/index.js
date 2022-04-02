@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { collection, query, where, onSnapshot, addDoc, getDocs, setDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { Table } from 'rsuite';
 import { Pagination } from 'rsuite';
 import "rsuite/dist/rsuite.min.css";
+import { CircleLoader } from 'react-spinners';
 import Layout from '../../../layout/layout'
 import Input from '../../../components/input';
 import { useAppContext } from '../../../contexts/AppContext';
@@ -10,7 +11,6 @@ import { db } from '../../../firebase/config';
 import "./user.css"
 import PrimaryButton, { ActionButton } from '../../../components/button';
 import CreateUserModal from '../../../components/modal/user';
-import moment from 'moment';
 
 const UsersPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -24,24 +24,22 @@ const UsersPage = () => {
 
 
   const handleCreate = async (email, name, password) => {
-    const id = new Date().getTime()
-    console.log(id, email, password, name)
-    // const docRef = await setDoc(doc(db, "user", id), {
-    //   email: email,
-    //   displayName: name,
-    //   password: password,
-    //   active: true,
-    // });
-    await setDoc(doc(db, "user", id), {
+    const user = {
       email: email,
       displayName: name,
       password: password,
       active: true,
+      createdAt: new Date().getTime()
+    }
+    setLoading(true)
+    const docRef = await addDoc(collection(db, "user"), user).then(() => {
+      setUserList([...userList, user])
     });
-    // setUserList([...userList, ])
+    setLoading(false)
   }
 
   const getUser = async () => {
+    setLoading(true)
     const parkingData = await getDocs(collection(db, "user"))
     setUserList(parkingData.docs.map((doc) => (
       {
@@ -49,6 +47,7 @@ const UsersPage = () => {
         id: doc.id
       }
     )));
+    setLoading(false)
     console.log(parkingData)
   }
 
@@ -57,8 +56,7 @@ const UsersPage = () => {
 
   }
 
-  const handleRemove = async(id) => {
-    console.log(id)
+  const handleRemove = async (id) => {
     const result = await deleteDoc(doc(db, "user", id))
     getUser()
   }
@@ -75,25 +73,24 @@ const UsersPage = () => {
   });
 
   useEffect(() => {
-    console.log(db)
     getUser()
   }, [])
 
   return (
     <Layout>
-      <div className='pt-12 w-full px-8'>
+      <div className='pt-12 w-full px-8 relative'>
         <div className='flex items-center justify-end'>
-          <ActionButton type="success" className="px-8 text-lg" onClick={()=>{setOpenModal(true)}}>Create User</ActionButton>
+          <ActionButton type="success" className="px-8 text-lg" onClick={() => { setOpenModal(true) }}>Create User</ActionButton>
         </div>
         {/* <div>
         <Input value={email} setValue={setEmail} type="email" label="email" />
         <Input value={password} setValue={setPassword} type="password" label="password" />
         <button onClick={handleCreate}>create</button>
       </div> */}
-        <div className='rounded-lg  w-full'>
+        <div className='w-full'>
           <Table
-            className='rounded-lg text-white '
-            height={limit===5?480:600}
+            className='text-white '
+            height={limit === 5 ? 480 : 600}
             data={data}
             rowHeight={80}
             onRowClick={data => {
@@ -146,8 +143,12 @@ const UsersPage = () => {
             />
           </div>
         </div>
+        {loading && <div className='absolute left-0 top-0 bg-black bg-opacity-50 flex items-center justify-center w-full h-full z-50'>
+          <CircleLoader loading={loading} size={150} />
+        </div>}
       </div>
-      <CreateUserModal open={openModal} setOpen={setOpenModal} create={handleCreate}/>
+      <CreateUserModal open={openModal} setOpen={setOpenModal} create={handleCreate} />
+
     </Layout>
   )
 }
