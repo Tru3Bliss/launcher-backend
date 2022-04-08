@@ -31,7 +31,7 @@ module.exports = {
       spacing: {
         300: '300px',
         600: '600px'
-      }
+      },
     },
   },
   plugins: [],

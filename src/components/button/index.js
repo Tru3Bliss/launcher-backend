@@ -41,10 +41,10 @@ export const ActionButton = (props) => {
 
   const { className, onClick, children, type } = props
   return (
-    <button className={`${className} rounded-lg flex justify-center gap-2 cursor-pointer items-center bg-gradient-to-r 
+    <button className={`${className} px-2 rounded-lg flex justify-center gap-2 cursor-pointer items-center bg-gradient-to-r 
     to-app-from-app-yellow bg-[length:200%_100%] hover:bg-[center_right_1rem] hover:scale-[1.02] 
     active:scale-[0.98] transition-all duration-700 ease-out
-    text-center font-bold ${type === "success" ? "from-app-green-dark via-app-green to-app-green-dark " : type === "error" ? "from-app-red-dark via-app-red to-app-red-dark " 
+    px-6 py-4 text-white text-center font-bold ${type === "success" ? "from-app-green-dark via-app-green to-app-green-dark " : type === "error" ? "from-app-red-dark via-app-red to-app-red-dark " 
     :type === "info" ? "from-app-gray-dark via-app-gray to-app-gray-dark " : "from-app-blue-dark via-app-blue to-app-blue-dark "} text-white leading-[22px] lg:leading-[28px]  py-1`} onClick={onClick}>
       {children}
     </button>

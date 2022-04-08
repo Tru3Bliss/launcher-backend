@@ -47,12 +47,12 @@ const CreateUserModal = (props) => {
           <div className='flex gap-8 flex-col'>
 
             <div className='w-full flex flex-col justify-around gap-4'>
-              <Input value={email} setValue={setEmail} type="email" label="Email" />
-              {error === 1 && <p className='text-app-red'>Please input user Email</p>}
-              <Input value={name} setValue={setName} type="text" label="Name" />
-              {error === 2 && <p className='text-app-red'>User name should contains at least 4 letters</p>}
-              <Input value={password} setValue={setPassword} type="password" label="Password" />
-              {error === 3 && <p className='text-app-red'>Password length should be at least 6 letters</p>}
+              <Input value={email} setValue={setEmail} type="email" label="E-mail" />
+              {error === 1 && <p className='text-app-red'>Por favor, insira o e-mail do usuário</p>}
+              <Input value={name} setValue={setName} type="text" label="Nome" />
+              {error === 2 && <p className='text-app-red'>O nome de usuário deve conter pelo menos 4 letras</p>}
+              <Input value={password} setValue={setPassword} type="password" label="Senha" />
+              {error === 3 && <p className='text-app-red'>O comprimento da senha deve ter pelo menos 6 letras</p>}
             </div>
             <div>
             </div>
@@ -71,8 +71,8 @@ const CreateUserModal = (props) => {
           </div>
 
           <div className="px-4 flex justify-end items-center space-x-4 py-6">
-            <ActionButton type="info" className="w-40 py-4 text-white rounded-md bg-gray-400 text-xl hover:bg-gray-300 active:bg-gray-500 font-bold" onClick={() => handleCreate()}>Save</ActionButton>
-            <ActionButton type="error" className="w-40 py-4 text-white rounded-md bg-red-400 text-xl hover:bg-red-300 active:bg-red-500 font-bold" onClick={() => setOpen(false)}>Close</ActionButton>
+            <ActionButton type="success" className="text-lg" onClick={() => handleCreate()}>Salvar</ActionButton>
+            <ActionButton type="error" className="text-lg" onClick={() => setOpen(false)}>Fechar</ActionButton>
           </div>
         </div>
       </div>

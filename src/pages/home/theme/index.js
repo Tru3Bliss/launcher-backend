@@ -17,14 +17,14 @@ import { async } from '@firebase/util';
 import CategoryItem from '../../../components/item/categoryItem';
 import CreateBlogModal from '../../../components/modal/blog';
 
-const ChannelPage = () => {
+const ThemePage = () => {
   const [openModal, setOpenModal] = useState(false)
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [blogList, setBlogList] = useState([])
+  const [themeList, setThemeList] = useState([])
   const [categoryList, setCategoryList] = useState([])
   const [categoryOption, setCategoryOption] = useState([])
   const [newCategory, setNewCategory] = useState("")
@@ -33,17 +33,17 @@ const ChannelPage = () => {
 
 
   const handleCreate = async (title, content, downloadLink, category) => {
-    const blog = {
+    const theme = {
       title: title,
       content: content,
       artwork: downloadLink,
       category: category,
       createdAt: new Date().getTime()
     }
-    const docRef = await addDoc(collection(db, "blog"), blog).then(() => {
+    const docRef = await addDoc(collection(db, "theme"), theme).then(() => {
     });
     setLoading(true)
-    getBlog()
+    getTheme()
   }
 
   const handleCreateCategory = async () => {
@@ -62,12 +62,12 @@ const ChannelPage = () => {
 
 
   /**
-   * get blogList from firestore
+   * get themeList from firestore
    */
-  const getBlog = async () => {
+  const getTheme = async () => {
     setLoading(true)
-    const parkingData = await getDocs(collection(db, "blog"))
-    setBlogList(parkingData.docs.map((doc) => (
+    const parkingData = await getDocs(collection(db, "theme"))
+    setThemeList(parkingData.docs.map((doc) => (
       {
         ...doc.data(),
         id: doc.id
@@ -98,8 +98,8 @@ const ChannelPage = () => {
 
   const handleRemove = async (id) => {
     setLoading(true)
-    const result = await deleteDoc(doc(db, "blog", id))
-    getBlog()
+    const result = await deleteDoc(doc(db, "theme", id))
+    getTheme()
   }
 
   const handleCategoryRemove = async (id) => {
@@ -129,7 +129,7 @@ const ChannelPage = () => {
     setLimit(dataKey);
   };
 
-  const data = blogList.filter((v, i) => {
+  const data = themeList.filter((v, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
     return i >= start && i < end;
@@ -153,7 +153,7 @@ const ChannelPage = () => {
   }, [categoryList])
 
   useEffect(() => {
-    getBlog()
+    getTheme()
     getCategory()
   }, [])
 
@@ -172,9 +172,9 @@ const ChannelPage = () => {
             ))}
           </div>
         </div>
-        <p className='text-white text-bold text-2xl'>Lista de blogs</p>
+        <p className='text-white text-bold text-2xl'>Lista de Tema</p>
         <div className='flex items-center justify-end mt-2'>
-          <ActionButton type="success" className="px-8 text-lg" onClick={() => { setOpenModal(true) }}>Criar blog</ActionButton>
+          <ActionButton type="success" className="px-8 text-lg" onClick={() => { setOpenModal(true) }}>Criar Tema</ActionButton>
         </div>
         {/* <div>
         <Input value={email} setValue={setEmail} type="email" label="email" />
@@ -232,7 +232,7 @@ const ChannelPage = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-              total={blogList.length}
+              total={themeList.length}
               limitOptions={[5, 10, 20]}
               limit={limit}
               activePage={page}
@@ -251,4 +251,4 @@ const ChannelPage = () => {
   )
 }
 
-export default ChannelPage
+export default ThemePage

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { collection, query, where, onSnapshot, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { getAuth, deleteUser, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { Table } from 'rsuite';
 import { Pagination } from 'rsuite';
 import "rsuite/dist/rsuite.min.css";
@@ -11,6 +12,7 @@ import { db } from '../../../firebase/config';
 import "./user.css"
 import PrimaryButton, { ActionButton } from '../../../components/button';
 import CreateUserModal from '../../../components/modal/user';
+import Swal from 'sweetalert2';
 
 const UsersPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -31,15 +33,37 @@ const UsersPage = () => {
       active: true,
       createdAt: new Date().getTime()
     }
-    const docRef = await addDoc(collection(db, "user"), user).then(() => {
-    });
-    getUser()
+    const auth = getAuth();
+    setLoading(true)
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        // Signed in 
+        // const user = userCredential.user;
+        // ...
+        const docRef = await addDoc(collection(db, "user"), user).then(() => {
+        });
+        getUser()
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+        console.log(errorCode)
+        console.log(errorMessage)
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to create User',
+        })
+      });
+
   }
 
   const getUser = async () => {
     setLoading(true)
     const parkingData = await getDocs(collection(db, "user"))
     setUserList(parkingData.docs.map((doc) => (
+
       {
         ...doc.data(),
         id: doc.id
@@ -54,8 +78,31 @@ const UsersPage = () => {
 
   }
 
-  const handleRemove = async (id) => {
-    const result = await deleteDoc(doc(db, "user", id))
+  const handleRemove = async (targetUser) => {
+    /**
+     * Signin and delete user
+     */
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, targetUser.email, targetUser.password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        deleteUser(user).then(() => {
+          // User deleted.
+          console.log("user Deleted")
+        }).catch((error) => {
+          // An error ocurred
+          // ...
+          console.log(error.message)
+        });
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage)
+      });
+    const result = await deleteDoc(doc(db, "user", targetUser.id))
     getUser()
   }
 
@@ -77,8 +124,9 @@ const UsersPage = () => {
   return (
     <Layout>
       <div className='pt-12 w-full px-8 relative'>
+        <p className='text-white text-bold text-2xl'>Lista de usuários</p>
         <div className='flex items-center justify-end'>
-          <ActionButton type="success" className="px-8 text-lg" onClick={() => { setOpenModal(true) }}>Create User</ActionButton>
+          <ActionButton type="success" className="px-8 text-lg" onClick={() => { setOpenModal(true) }}>Criar usuário</ActionButton>
         </div>
         {/* <div>
         <Input value={email} setValue={setEmail} type="email" label="email" />
@@ -96,25 +144,25 @@ const UsersPage = () => {
             limit={limit}
           >
             <Table.Column width={200} className="">
-              <Table.HeaderCell className="">Email</Table.HeaderCell>
+              <Table.HeaderCell className="">E-mail</Table.HeaderCell>
               <Table.Cell dataKey="email" className="flex items-center justify-center" />
             </Table.Column>
             <Table.Column flexGrow={1} align="center" >
-              <Table.HeaderCell>Display Name</Table.HeaderCell>
+              <Table.HeaderCell>Nome de exibição</Table.HeaderCell>
               <Table.Cell dataKey="displayName" />
             </Table.Column>
             <Table.Column width={200}>
-              <Table.HeaderCell>Password</Table.HeaderCell>
+              <Table.HeaderCell>Senha</Table.HeaderCell>
               <Table.Cell dataKey="password" />
             </Table.Column>
             <Table.Column width={180} align="center">
-              <Table.HeaderCell>Action</Table.HeaderCell>
+              <Table.HeaderCell>Açao</Table.HeaderCell>
               <Table.Cell>
                 {rowData => {
                   return (
                     <div className='flex gap-2'>
-                      <ActionButton className='px-4' onClick={() => { handleEdit(rowData) }}>Edit</ActionButton>
-                      <ActionButton className='px-4' type={"error"} onClick={() => { handleRemove(rowData.id) }}>Delete</ActionButton>
+                      {/* <ActionButton className='px-4 w-max' onClick={() => { handleEdit(rowData) }}>Edit</ActionButton> */}
+                      <ActionButton className='px-4 w-max' type={"error"} onClick={() => { handleRemove(rowData) }}>Excluir</ActionButton>
                     </div>
                   );
                 }}
@@ -142,7 +190,7 @@ const UsersPage = () => {
           </div>
         </div>
         {loading && <div className='absolute left-0 top-0 bg-black bg-opacity-50 flex items-center justify-center w-full h-full z-50'>
-          <CircleLoader loading={loading} size={150} />
+          <img src="/assets/image/rocketgif-small.gif" alt="logo" className='w-32 animate-bounce mx-auto mt-2'/> 
         </div>}
       </div>
       <CreateUserModal open={openModal} setOpen={setOpenModal} create={handleCreate} />
