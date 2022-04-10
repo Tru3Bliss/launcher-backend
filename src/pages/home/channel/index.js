@@ -16,6 +16,7 @@ import CreateUserModal from '../../../components/modal/user';
 import { async } from '@firebase/util';
 import CategoryItem from '../../../components/item/categoryItem';
 import CreateBlogModal from '../../../components/modal/blog';
+import CreateChannelModal from '../../../components/modal/channel';
 
 const ChannelPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -25,7 +26,7 @@ const ChannelPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [blogList, setBlogList] = useState([])
-  const [categoryList, setCategoryList] = useState([])
+  const [themeList, setThemeList] = useState([])
   const [categoryOption, setCategoryOption] = useState([])
   const [newCategory, setNewCategory] = useState("")
   const [downloadLink, setDownloadLink] = useState()
@@ -56,7 +57,7 @@ const ChannelPage = () => {
         setLoading(false)
       })
       setNewCategory("")
-      getCategory()
+      getTheme()
     }
   }
 
@@ -77,12 +78,13 @@ const ChannelPage = () => {
   }
 
   /**
-   * get categoryList from firestore
+   * get themeList from firestore
    */
-  const getCategory = async () => {
+  const getTheme = async () => {
     setLoading(true)
-    const parkingData = await getDocs(collection(db, "category"))
-    setCategoryList(parkingData.docs.map((doc) => (
+    const parkingData = await getDocs(collection(db, "theme"))
+    console.log("theme",parkingData)
+    setThemeList(parkingData.docs.map((doc) => (
       {
         ...doc.data(),
         id: doc.id
@@ -104,22 +106,22 @@ const ChannelPage = () => {
 
   const handleCategoryRemove = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Tem certeza?',
+      text: "Você não será capaz de reverter isso!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Sim, exclua!'
     }).then(async (result) => {
       if (result.isConfirmed) {
         const result = await deleteDoc(doc(db, "category", id))
         Swal.fire(
-          'Deleted!',
-          'Category has been deleted.',
+          'Excluída!',
+          'A categoria foi excluída.',
           'success'
         )
-        getCategory()
+        getTheme()
       }
     })
   }
@@ -143,31 +145,31 @@ const ChannelPage = () => {
 
   useEffect(() => {
     let buffer =
-      categoryList.map((category) => (
+      themeList.map((category) => (
         {
           value: category.name,
           label: category.name
         }
       ))
     console.log(buffer)
-  }, [categoryList])
+  }, [themeList])
 
   useEffect(() => {
     getBlog()
-    getCategory()
+    getTheme()
   }, [])
 
   return (
     <Layout>
       <div className='pt-12 w-full px-8 relative'>
-        <div className='mb-6'>
+        <div className='mb-6 hidden'>
           <p className='text-white text-bold text-2xl'>Categoria</p>
           <div className='mt-4 flex gap-4 items-center'>
             <Input value={newCategory} setValue={setNewCategory} type={"text"} className="max-w-sm gap-0" />
             <ActionButton type="info" onClick={handleCreateCategory}>Adicionar categoria</ActionButton>
           </div>
           <div className='mt-2 flex-wrap flex gap-2'>
-            {categoryList.map((category, idx) => (
+            {themeList.map((category, idx) => (
               <CategoryItem data={category} key={idx} remove={handleCategoryRemove} />
             ))}
           </div>
@@ -245,7 +247,7 @@ const ChannelPage = () => {
           <img src="/assets/image/rocketgif-small.gif" alt="logo" className='w-32 animate-bounce mx-auto mt-2' />
         </div>}
       </div>
-      <CreateBlogModal open={openModal} setOpen={setOpenModal} create={handleCreate} categoryList={categoryList} />
+      <CreateChannelModal open={openModal} setOpen={setOpenModal} create={handleCreate} themeList={themeList} />
 
     </Layout>
   )

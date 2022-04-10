@@ -104,19 +104,19 @@ const ThemePage = () => {
 
   const handleCategoryRemove = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Tem certeza?',
+      text: "Você não será capaz de reverter isso!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Sim, exclua!'
     }).then(async (result) => {
       if (result.isConfirmed) {
         const result = await deleteDoc(doc(db, "category", id))
         Swal.fire(
-          'Deleted!',
-          'Category has been deleted.',
+          'Excluída!',
+          'A categoria foi excluída.',
           'success'
         )
         getCategory()
